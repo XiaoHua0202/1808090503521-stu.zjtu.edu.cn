@@ -12,11 +12,22 @@
     '8.退出整个程序'
 '''
 import time #导入时间模块
+import os
+
 
 
 isflog = False #定义一个标识符，判断是否登陆
 
-user_dic = {}   #定义一个空字典，来存放用户信息
+def regist(username,password): #注册函数
+    with open('usename.txt','a', encoding='utf-8') as f:
+        line = '{}|{}\n'.format(username,password)
+        f.write(line)
+
+
+
+
+
+
 def wrapper(f):#装饰器 判断用户是否登陆
     def inner(*args,**kwargs):
 
@@ -25,7 +36,7 @@ def wrapper(f):#装饰器 判断用户是否登陆
             ret = f(*args,**kwargs)
         else:
             print('请你先去登陆')
-            ret = f1()
+            flog  = f1()
         return ret
     return inner
 
@@ -45,18 +56,19 @@ def f1():
     time.sleep(2)
     username = input('请你输入用户名')
     password = input('请你输入你的密码')
-
-    if username in user_dic.keys():
-        if password == user_dic[username]:
-            print('登陆成功')
-            isflog =True
+    with open('usename.txt',encoding='utf-8') as f:
+        for line in f:
+            us, pw = line.strip().split('|')
+            if username in line :
+                if username == us:
+                    if password == pw:
+                        print('登陆成功')
+                        return True
+                    else:
+                        print('你输入的用户名或密码错误')
         else:
-            print('你输入的用户名或密码错误')
-    else:
-        print('没有该用户，请你前去注册')
-        f2()
-
-
+            print('没有该用户，请你前去注册')
+            f2()
 def f2():
     print('欢迎来到注册界面')
     count = 0
@@ -65,19 +77,26 @@ def f2():
 
     password = input('请输入你的密码')
     if username.isalnum(): #用户名只能是字母和数字，不能为特殊字符
-        if username not in user_dic.keys(): #判断注册用户在不在已注册信息中
-            if 6<=len(password)<=14:#判断密码 只能为6-14个字符
-                dic_add = {username:password}
-                user_dic.update(dic_add)
+        with open('usename.txt',encoding='utf-8') as f:
+            for line in f:
+                # us,pw = line.strip().split('|')
 
-            else:
-                print('密码不符合规范')
-        else:
-            print('该用户已经存在')
+                if username not in line: #判断注册用户在不在已注册信息中
+                    ret = True
+
+                else:
+                    ret = False
+                    break
+            if ret:
+                if 6 <= len(password) <= 14:  # 判断密码 只能为6-14个字符
+                    regist(username, password)
+
+
+                else:
+                    print('密码不符合规范')
+            else:print('用户已存在')
     else:
         print('用户名中含有特殊字符，请再次注册')
-
-
 @wrapper
 def f3():
     f3_list = [
