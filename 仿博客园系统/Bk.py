@@ -3,6 +3,10 @@
 
 '''
 import module #导入同文件的自定义模块
+
+
+
+
 isflog_circle = True
 while isflog_circle:
     welcome_list = [
@@ -60,5 +64,11 @@ while isflog_circle:
                 print('你输入有误，请重新输入')
 
     judge()#调用定义选项函数
+
+
+
+
+
+
 
 
